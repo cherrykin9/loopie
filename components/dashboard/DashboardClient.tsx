@@ -32,7 +32,7 @@ export function DashboardClient({ tasks }: { tasks: TaskWithStatus[] }) {
   return (
     <>
       <main className="flex-1 p-6 pb-28">
-        <SummaryPills overdue={counts.overdue} dueToday={counts.dueToday} onTrack={counts.onTrack} />
+        <SummaryPills overdue={counts.overdue} dueSoon={counts.dueSoon} onTrack={counts.onTrack} />
 
         {allCaughtUp && !showScheduleAnyway ? (
           <AllCaughtUpState onViewSchedule={() => setShowScheduleAnyway(true)} />

@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
   const { data, error } = await supabase
     .from("task_status")
     .select("*")
-    .in("status", ["overdue", "due_today"])
+    .in("status", ["overdue", "due_soon"])
     .order("next_due", { ascending: true });
 
   if (error) {

@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { DashboardClient } from "@/components/dashboard/DashboardClient";
 import { SignOutButton } from "@/components/dashboard/SignOutButton";
+import { Loopie } from "@/components/mascot/Loopie";
 import type { TaskWithStatus } from "@/lib/tasks";
 
 export default async function DashboardPage() {
@@ -20,11 +21,20 @@ export default async function DashboardPage() {
 
   return (
     <>
-      <header className="flex items-center justify-between px-6 pt-6">
-        <span className="font-wordmark text-2xl text-terracotta">loopie</span>
-        <SignOutButton />
+      <header className="max-w-[720px] w-full mx-auto flex items-center justify-between flex-wrap gap-3 px-6 pt-8 pb-2">
+        <div className="flex items-center gap-2">
+          <Loopie variant="neutral" size={64} animate={false} />
+          <span className="font-wordmark text-3xl text-terracotta">loopie</span>
+        </div>
+        <div className="text-right">
+          <p className="text-sm text-charcoal-soft">Everything on its cycle, nothing forgotten</p>
+          <SignOutButton />
+        </div>
       </header>
       <DashboardClient tasks={(data ?? []) as TaskWithStatus[]} />
+      <footer className="text-center text-xs text-charcoal-soft py-6">
+        loopie © 2026 · made for Yimun
+      </footer>
     </>
   );
 }

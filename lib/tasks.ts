@@ -1,4 +1,4 @@
-export type TaskStatus = "overdue" | "due_today" | "on_track";
+export type TaskStatus = "overdue" | "due_soon" | "on_track";
 
 export type TaskWithStatus = {
   id: string;
@@ -20,7 +20,7 @@ export type GroupedTasks = {
   onTrack: TaskWithStatus[];
 };
 
-// Overdue-first sort, then due-today, then soonest on-track first.
+// Overdue-first sort, then due-soon, then soonest on-track first.
 export function sortByUrgency(tasks: TaskWithStatus[]): TaskWithStatus[] {
   return [...tasks].sort((a, b) => a.days_until_due - b.days_until_due);
 }
@@ -36,7 +36,7 @@ export function groupTasks(tasks: TaskWithStatus[]): GroupedTasks {
 export function summaryCounts(tasks: TaskWithStatus[]) {
   return {
     overdue: tasks.filter((t) => t.status === "overdue").length,
-    dueToday: tasks.filter((t) => t.status === "due_today").length,
+    dueSoon: tasks.filter((t) => t.status === "due_soon").length,
     onTrack: tasks.filter((t) => t.status === "on_track").length,
   };
 }
@@ -50,6 +50,29 @@ export const INTERVAL_PRESETS = [
   { label: "Every 6 months", days: 182 },
   { label: "Yearly", days: 365 },
 ] as const;
+
+export const STATUS_LABELS: Record<TaskStatus, string> = {
+  overdue: "Overdue",
+  due_soon: "Due soon",
+  on_track: "On track",
+};
+
+// Short phrase for the badge/email context, e.g. "Overdue", "Due soon".
+export function statusLabel(task: TaskWithStatus): string {
+  return STATUS_LABELS[task.status];
+}
+
+// Detailed day-count phrase for the card subtitle, e.g. "5 days overdue", "due in 1 day".
+export function dueDetail(task: TaskWithStatus): string {
+  const days = task.days_until_due;
+  if (days < 0) {
+    const n = Math.abs(days);
+    return `${n} day${n === 1 ? "" : "s"} overdue`;
+  }
+  if (days === 0) return "due today";
+  if (days === 1) return "due in 1 day";
+  return `due in ${days} days`;
+}
 
 export function formatDueLabel(task: TaskWithStatus): string {
   const days = task.days_until_due;

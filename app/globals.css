@@ -7,6 +7,7 @@
   --sage: #8FA888;
   --sage-soft: #DCE8D8;
   --amber: #E0A63C;
+  --amber-soft: #F3E1B8;
   --red-orange: #E06B3C;
   --charcoal: #4A423B;
   --charcoal-soft: #8A8078;
@@ -20,6 +21,7 @@
   --color-sage: var(--sage);
   --color-sage-soft: var(--sage-soft);
   --color-amber: var(--amber);
+  --color-amber-soft: var(--amber-soft);
   --color-red-orange: var(--red-orange);
   --color-charcoal: var(--charcoal);
   --color-charcoal-soft: var(--charcoal-soft);

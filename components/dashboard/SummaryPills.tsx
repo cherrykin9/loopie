@@ -1,28 +1,29 @@
 export function SummaryPills({
   overdue,
-  dueToday,
+  dueSoon,
   onTrack,
 }: {
   overdue: number;
-  dueToday: number;
+  dueSoon: number;
   onTrack: number;
 }) {
   const pills = [
-    { label: "Overdue", count: overdue, bg: "bg-red-orange" },
-    { label: "Due today", count: dueToday, bg: "bg-amber" },
-    { label: "On track", count: onTrack, bg: "bg-sage" },
+    { label: "Overdue", count: overdue, color: "text-red-orange" },
+    { label: "Due soon", count: dueSoon, color: "text-amber" },
+    { label: "All good", count: onTrack, color: "text-sage" },
   ];
 
   return (
-    <div className="flex gap-2 max-w-[420px] mx-auto mb-5 overflow-x-auto">
+    <div className="grid grid-cols-3 gap-3 max-w-[420px] mx-auto mb-6">
       {pills.map((pill) => (
         <div
           key={pill.label}
-          className="flex items-center gap-2 bg-card-bg rounded-full px-4 py-2 shadow-[0_2px_10px_rgba(74,66,59,0.06)] shrink-0"
+          className="bg-card-bg rounded-2xl px-3 py-4 text-center shadow-[0_2px_10px_rgba(74,66,59,0.06)]"
         >
-          <span className={`w-2 h-2 rounded-full ${pill.bg}`} />
-          <span className="text-sm font-bold text-charcoal">{pill.count}</span>
-          <span className="text-xs text-charcoal-soft font-semibold">{pill.label}</span>
+          <div className={`text-2xl font-extrabold ${pill.color}`}>{pill.count}</div>
+          <div className="text-[10px] font-bold uppercase tracking-wide text-charcoal-soft mt-1">
+            {pill.label}
+          </div>
         </div>
       ))}
     </div>
