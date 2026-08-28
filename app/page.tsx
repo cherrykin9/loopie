@@ -21,17 +21,17 @@ export default async function DashboardPage() {
 
   return (
     <>
-      <header className="max-w-[720px] w-full mx-auto flex items-center justify-between flex-wrap gap-3 px-6 pt-8 pb-2">
-        <div className="flex items-center gap-2">
-          <Loopie variant="neutral" size={64} animate={false} />
+      <header className="max-w-[720px] w-full mx-auto flex items-center justify-between gap-3 px-6 pt-8 pb-2">
+        <div className="flex items-center gap-1">
+          <Loopie variant="neutral" size={84} animate={false} />
           <span className="font-wordmark text-3xl text-terracotta">loopie</span>
         </div>
-        <div className="text-right">
-          <p className="text-sm text-charcoal-soft">Everything on its cycle, nothing forgotten</p>
-          <SignOutButton />
-        </div>
+        <SignOutButton />
       </header>
       <DashboardClient tasks={(data ?? []) as TaskWithStatus[]} />
+      <p className="text-center font-wordmark text-xl text-terracotta/70 pt-8 px-6">
+        Everything on its cycle, nothing forgotten
+      </p>
       <footer className="text-center text-xs text-charcoal-soft py-6">
         loopie © 2026 · made for Yimun
       </footer>
