@@ -36,6 +36,14 @@ function EditSheetContent({ task, onClose }: { task: TaskWithStatus; onClose: ()
     else onClose();
   }
 
+  async function handleUndoDone() {
+    setPending(true);
+    const result = await updateTask(task.id, { lastDoneDate: null });
+    setPending(false);
+    if (result?.error) setError(result.error);
+    else onClose();
+  }
+
   async function handleSaveEdit() {
     setPending(true);
     const result = await updateTask(task.id, { name, intervalDays: intervalDays ?? undefined });
@@ -66,13 +74,23 @@ function EditSheetContent({ task, onClose }: { task: TaskWithStatus; onClose: ()
 
       {!editing && !confirmingRemove && (
         <div className="flex flex-col gap-2">
-          <button
-            onClick={handleMarkDone}
-            disabled={pending}
-            className="px-7 py-3.5 rounded-2xl bg-sage text-white font-extrabold text-sm shadow-[0_6px_16px_rgba(143,168,136,0.4)] disabled:opacity-60"
-          >
-            {pending ? "Saving…" : "✓ Mark done today"}
-          </button>
+          {task.last_done_date ? (
+            <button
+              onClick={handleUndoDone}
+              disabled={pending}
+              className="px-7 py-3.5 rounded-2xl bg-cream text-charcoal font-bold text-sm border border-terracotta-soft disabled:opacity-60"
+            >
+              {pending ? "Saving…" : "↺ Undo — not done yet"}
+            </button>
+          ) : (
+            <button
+              onClick={handleMarkDone}
+              disabled={pending}
+              className="px-7 py-3.5 rounded-2xl bg-sage text-white font-extrabold text-sm shadow-[0_6px_16px_rgba(143,168,136,0.4)] disabled:opacity-60"
+            >
+              {pending ? "Saving…" : "✓ Mark done today"}
+            </button>
+          )}
           <button
             onClick={() => setEditing(true)}
             className="px-7 py-3.5 rounded-2xl bg-cream text-charcoal font-bold text-sm border border-terracotta-soft"
