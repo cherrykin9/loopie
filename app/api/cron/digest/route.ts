@@ -31,7 +31,13 @@ export async function GET(request: NextRequest) {
     ...tasks.map((t) => `${t.item_icon} ${t.item_name} — ${t.task_name} (${formatDueLabel(t)})`),
   ].join("\n");
 
-  const res = await sendTelegram(text);
+  const res = await sendTelegram(text, {
+    reply_markup: {
+      inline_keyboard: tasks.map((t) => [
+        { text: `✅ ${t.item_name} — ${t.task_name}`, callback_data: `done:${t.id}` },
+      ]),
+    },
+  });
   if (!res.ok) {
     return NextResponse.json({ error: await res.text() }, { status: 500 });
   }

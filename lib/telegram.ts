@@ -1,11 +1,15 @@
 import { INTERVAL_PRESETS } from "@/lib/tasks";
 
-export async function sendTelegram(text: string) {
-  return fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+export async function telegram(method: string, body: object) {
+  return fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/${method}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ chat_id: process.env.TELEGRAM_CHAT_ID, text }),
+    body: JSON.stringify(body),
   });
+}
+
+export async function sendTelegram(text: string, extra: object = {}) {
+  return telegram("sendMessage", { chat_id: process.env.TELEGRAM_CHAT_ID, text, ...extra });
 }
 
 // "🪴 Monstera, Water, weekly" → { icon, itemName, taskName, intervalDays }

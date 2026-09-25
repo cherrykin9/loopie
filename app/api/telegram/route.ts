@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { parseAddMessage, sendTelegram } from "@/lib/telegram";
+import { parseAddMessage, sendTelegram, telegram } from "@/lib/telegram";
 
 const HELP = `Send me something to track, like:
 🪴 Monstera, Water, weekly
@@ -15,6 +15,34 @@ export async function POST(request: NextRequest) {
   }
 
   const update = await request.json();
+
+  // Tap on a ✅ button under the daily digest.
+  const callback = update.callback_query;
+  if (callback?.data?.startsWith("done:") && String(callback.message?.chat.id) === process.env.TELEGRAM_CHAT_ID) {
+    const taskId = callback.data.slice("done:".length);
+    const today = new Date().toISOString().slice(0, 10);
+    const { error } = await createAdminClient()
+      .from("tasks")
+      .update({ last_done_date: today })
+      .eq("id", taskId);
+
+    await telegram("answerCallbackQuery", {
+      callback_query_id: callback.id,
+      text: error ? `Couldn't mark done: ${error.message}` : "Done! 🎉",
+    });
+    if (!error) {
+      const remaining = callback.message.reply_markup.inline_keyboard.filter(
+        (row: { callback_data: string }[]) => row[0].callback_data !== callback.data
+      );
+      await telegram("editMessageReplyMarkup", {
+        chat_id: callback.message.chat.id,
+        message_id: callback.message.message_id,
+        reply_markup: { inline_keyboard: remaining },
+      });
+    }
+    return NextResponse.json({ ok: true });
+  }
+
   const message = update.message;
   if (!message?.text || String(message.chat.id) !== process.env.TELEGRAM_CHAT_ID) {
     return NextResponse.json({ ok: true });
