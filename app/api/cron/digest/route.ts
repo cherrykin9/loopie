@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { formatDueLabel, type TaskWithStatus } from "@/lib/tasks";
+import { sendTelegram } from "@/lib/telegram";
 
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
@@ -30,15 +31,7 @@ export async function GET(request: NextRequest) {
     ...tasks.map((t) => `${t.item_icon} ${t.item_name} — ${t.task_name} (${formatDueLabel(t)})`),
   ].join("\n");
 
-  const res = await fetch(
-    `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ chat_id: process.env.TELEGRAM_CHAT_ID, text }),
-    }
-  );
-
+  const res = await sendTelegram(text);
   if (!res.ok) {
     return NextResponse.json({ error: await res.text() }, { status: 500 });
   }
